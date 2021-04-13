@@ -6,7 +6,6 @@ import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -25,8 +24,11 @@ public class TwitterFlowFanout extends TwitterFlowCommon {
     final static String TWITTER_FANOUT_EXCHANGE = "twitter_fanout";
     final static String TWITTER_FANOUT_A_QUEUE_NAME = "twitter_fanout_queue";
 
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    final RabbitTemplate rabbitTemplate;
+
+    public TwitterFlowFanout(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     // Configuración RabbitMQ
 
@@ -76,7 +78,7 @@ public class TwitterFlowFanout extends TwitterFlowCommon {
 
     @Override
     @Bean
-    public DirectChannel requestChannelRabbitMQ() {
+    public DirectChannel requestChannelRabbit() {
         return MessageChannels.direct().get();
     }
 
@@ -86,6 +88,6 @@ public class TwitterFlowFanout extends TwitterFlowCommon {
                 rabbitTemplate.getConnectionFactory());
         smlc.setQueues(aTwitterFanoutQueue());
         return Amqp.inboundAdapter(smlc)
-                .outputChannel(requestChannelRabbitMQ()).get();
+                .outputChannel(requestChannelRabbit()).get();
     }
 }

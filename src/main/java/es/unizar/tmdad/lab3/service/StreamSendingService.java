@@ -1,7 +1,6 @@
 package es.unizar.tmdad.lab3.service;
 
 import es.unizar.tmdad.lab3.domain.TargetedTweet;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.social.twitter.api.FilterStreamParameters;
@@ -12,31 +11,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StreamSendingService {
 
-    @Autowired
-    private StreamListener integrationStreamListener;
+    private final StreamListener integrationStreamListener;
 
-    @Autowired
-    private SimpMessageSendingOperations ops;
+    private final SimpMessageSendingOperations ops;
 
-    @Autowired
-    private TwitterTemplate twitterTemplate;
+    private final TwitterTemplate twitterTemplate;
 
     private Stream stream;
+
+    public StreamSendingService(StreamListener integrationStreamListener, SimpMessageSendingOperations ops, TwitterTemplate twitterTemplate) {
+        this.integrationStreamListener = integrationStreamListener;
+        this.ops = ops;
+        this.twitterTemplate = twitterTemplate;
+    }
 
     @PostConstruct
     public void initialize() {
         FilterStreamParameters fsp = new FilterStreamParameters();
         fsp.addLocation(-180, -90, 180, 90);
         stream = twitterTemplate.streamingOperations().filter(fsp,
-                Arrays.asList(integrationStreamListener));
+                Collections.singletonList(integrationStreamListener));
     }
 
     public Stream getStream() {

@@ -6,7 +6,6 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -26,8 +25,11 @@ public class TwitterFlowDirect extends TwitterFlowCommon {
     final static String TWITTER_DIRECT_A_QUEUE_NAME = "twitter_direct_queue";
     final static String TWITTER_DIRECT_A_ROUTING_KEY = TWITTER_DIRECT_A_QUEUE_NAME;
 
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    final RabbitTemplate rabbitTemplate;
+
+    public TwitterFlowDirect(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     // Configuración obligatoria RabbitMQ
 
@@ -82,12 +84,12 @@ public class TwitterFlowDirect extends TwitterFlowCommon {
                 rabbitTemplate.getConnectionFactory());
         smlc.setQueues(aTwitterDirectQueue());
         return Amqp.inboundAdapter(smlc)
-                .outputChannel(requestChannelRabbitMQ()).get();
+                .outputChannel(requestChannelRabbit()).get();
     }
 
     @Override
     @Bean
-    public DirectChannel requestChannelRabbitMQ() {
+    public DirectChannel requestChannelRabbit() {
         return MessageChannels.direct().get();
     }
 

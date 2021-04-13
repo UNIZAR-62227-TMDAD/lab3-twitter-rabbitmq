@@ -2,7 +2,7 @@
 
 Se os proporciona una versión del servidor en el que por defecto un _Flow #1_ se conecta al stream de todos los Tweets geolocalizados.
 A continuación los envía a un exchange de un RabbitMQ que los enruta a la _Queue #A_.
-Un  _Flow #2_ se conecta al la _Queue #A_ de RabbitMQ y procesa los mensajes como en el laboratorio 2.
+Un _Flow #2_ se conecta al la _Queue #A_ de RabbitMQ y procesa los mensajes como en el laboratorio 2.
 
 Actualmente el código contiene:
 
@@ -22,7 +22,7 @@ Alternativamente podemos usar las tareas creadas en gradle:
 
 * `gradle dockerRun` crea una imagen y asocia un contenedor persistente a la tarea.
 * `gradle dockerStop` para el contenedor persistente creado con `gradle dockerRun`.
-* `gradle dockerRemoveContainer`, necesario antes de `gradle dockerRun` si hay un contenedor persistente en ejecución o parado. 
+* `gradle dockerRemoveContainer` necesario antes de `gradle dockerRun` si hay un contenedor persistente en ejecución o parado. 
 
 ## Objetivos
 
@@ -33,9 +33,9 @@ _Primera decisión_: ¿Qué tipo de exchange es el más adecuado?
 Hay tres `profile` de Spring Boot disponibles, cada una asociada con un exchange.
 Se han creado tres tareas que ejecutan la aplicación con el profile correspondiente activado:
 
-* `gradle direct`
-* `gradle fancout`
-* `gradle topic`
+* `gradle bootRun -Dprofile=direct`
+* `gradle bootRun -Dprofile=fanout`
+* `gradle bootRun -Dprofile=topic`
 
 _Segunda decisión_: ¿Dónde implemento el _Flow #3_?
 _Tercera decisión_: ¿Cómo visualizo el resultado del _Flow #3_?

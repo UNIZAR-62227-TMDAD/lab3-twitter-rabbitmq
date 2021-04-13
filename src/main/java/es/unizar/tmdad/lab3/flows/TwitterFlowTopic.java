@@ -6,7 +6,6 @@ import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -29,8 +28,11 @@ public class TwitterFlowTopic extends TwitterFlowCommon {
     final static String DYNAMIC_ROUTING_KEY_VALUE = "{T(java.lang.Math).random() < 0.5 ? "
             + TWITTER_TOPIC_A_ROUTING_KEY_VALUE + " : 'dummy'}";
 
-    @Autowired
-    RabbitTemplate rabbitTemplate;
+    final RabbitTemplate rabbitTemplate;
+
+    public TwitterFlowTopic(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
 
     // Configuración RabbitMQ
 
@@ -85,7 +87,7 @@ public class TwitterFlowTopic extends TwitterFlowCommon {
 
     @Override
     @Bean
-    public DirectChannel requestChannelRabbitMQ() {
+    public DirectChannel requestChannelRabbit() {
         return MessageChannels.direct().get();
     }
 
@@ -95,6 +97,6 @@ public class TwitterFlowTopic extends TwitterFlowCommon {
                 rabbitTemplate.getConnectionFactory());
         smlc.addQueues(aTwitterTopicQueue());
         return Amqp.inboundAdapter(smlc)
-                .outputChannel(requestChannelRabbitMQ()).get();
+                .outputChannel(requestChannelRabbit()).get();
     }
 }

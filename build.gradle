@@ -1,20 +1,14 @@
-import org.springframework.boot.gradle.tasks.run.BootRun
-
 plugins {
-    id 'org.springframework.boot' version '2.2.0.RELEASE'
-    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'org.springframework.boot' version '2.4.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'application'
-    id 'com.palantir.docker-run' version '0.25.0'
+    id 'com.palantir.docker-run' version '0.26.0'
 }
 
 group = 'es.unizar.tmdad'
-version = '2020'
+version = '2021'
 sourceCompatibility = 1.8
-
-application {
-    mainClassName = 'es.unizar.tmdad.lab3.Application'
-}
 
 repositories {
     mavenCentral()
@@ -23,7 +17,7 @@ repositories {
 ext {
     boostrapVersion = '4.3.1'
     fontawesomeVersion = '5.12.0'
-    springSocialVersion = '1.1.0.RELEASE'
+    springSocialVersion = '1.1.2.RELEASE'
     mustacheVersion = '3.1.0'
     stompVersion = '2.3.3'
     sockjsVersion = '1.0.2'
@@ -71,32 +65,7 @@ dockerRun {
     daemonize = true
 }
 
-task direct(type: BootRun, dependsOn: 'build') {
-    group = 'Application'
-    description = 'Exchange en modo direct'
-    doFirst() {
-        main = project.mainClassName
-        classpath = sourceSets.main.runtimeClasspath
-        systemProperty 'spring.profiles.active', 'direct'
-    }
-}
-
-task fanout(type: BootRun, dependsOn: 'build') {
-    group = 'Application'
-    description = 'Exchange en modo fanout'
-    doFirst() {
-        main = project.mainClassName
-        classpath = sourceSets.main.runtimeClasspath
-        systemProperty 'spring.profiles.active', 'fanout'
-    }
-}
-
-task topic(type: BootRun, dependsOn: 'build') {
-    group = 'Application'
-    description = 'Exchange en modo topic'
-    doFirst() {
-        main = project.mainClassName
-        classpath = sourceSets.main.runtimeClasspath
-        systemProperty 'spring.profiles.active', 'topic'
-    }
+bootRun {
+    mainClass.set('es.unizar.tmdad.lab3.Application')
+    systemProperty 'spring.profiles.active', System.getProperty("profile")
 }

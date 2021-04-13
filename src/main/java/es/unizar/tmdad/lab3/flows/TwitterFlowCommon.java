@@ -22,7 +22,7 @@ abstract public class TwitterFlowCommon {
     @Bean
     public IntegrationFlow sendTweet() {
         return IntegrationFlows
-                .from(requestChannelRabbitMQ())
+                .from(requestChannelRabbit())
                 .filter("payload instanceof T(org.springframework.social.twitter.api.Tweet)")
                 .transform(identifyTopics())
                 .split(TargetedTweet.class, duplicateByTopic())
@@ -30,7 +30,7 @@ abstract public class TwitterFlowCommon {
                 .handle("streamSendingService", "sendTweet").get();
     }
 
-    abstract protected AbstractMessageChannel requestChannelRabbitMQ();
+    abstract protected AbstractMessageChannel requestChannelRabbit();
 
     private GenericTransformer<TargetedTweet, TargetedTweet> highlight() {
         return t -> {

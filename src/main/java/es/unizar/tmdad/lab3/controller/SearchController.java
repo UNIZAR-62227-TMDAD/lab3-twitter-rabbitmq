@@ -1,7 +1,6 @@
 package es.unizar.tmdad.lab3.controller;
 
 import es.unizar.tmdad.lab3.service.TwitterLookupService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SearchController {
 
-    @Autowired
-    TwitterLookupService twitter;
+    final TwitterLookupService twitter;
+
+    public SearchController(TwitterLookupService twitter) {
+        this.twitter = twitter;
+    }
 
     @RequestMapping("/")
     public String greeting() {
